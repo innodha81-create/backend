@@ -13,10 +13,11 @@ class ActuatorController {
     });
   }
 
-  getHealth(req, res) {
+  async getHealth(req, res) {
     try {
-      const health = actuatorService.getHealth();
-      res.status(200).json(health);
+      const health = await actuatorService.getHealth();
+      const httpStatus = health.status === 'DOWN' ? 503 : 200;
+      res.status(httpStatus).json(health);
     } catch (error) {
       res.status(503).json({
         status: 'DOWN',
