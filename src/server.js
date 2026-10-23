@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import fs from 'fs';
+import actuatorRoutes from './actuator/routes/actuator.routes.js';
 
 // Load environment file based on NODE_ENV
 const nodeEnv = process.env.NODE_ENV || 'development';
@@ -25,17 +26,13 @@ app.get('/', (req, res) => {
   res.json({
     message: 'Backend API is running successfully!',
     environment: process.env.NODE_ENV || 'development',
-    port: PORT
+    port: PORT,
+    actuator: '/actuator'
   });
 });
 
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    status: 'ok',
-    environment: process.env.NODE_ENV || 'development',
-    uptime: process.uptime()
-  });
-});
+// Mount Actuator Module
+app.use('/actuator', actuatorRoutes);
 
 // Start Server
 app.listen(PORT, () => {
