@@ -5,6 +5,8 @@ import { initDatabase } from './config/database.js';
 import actuatorRoutes from './actuator/routes/actuator.routes.js';
 import signinRoleRoutes from './signin-roles/routes/signinRole.routes.js';
 import signinRoutes from './signin/routes/signin.routes.js';
+import projectRoutes from './project/routes/project.routes.js';
+import siteRoutes from './site/routes/site.routes.js';
 
 dotenv.config();
 
@@ -29,7 +31,9 @@ app.get('/', (req, res) => {
     endpoints: {
       actuator: '/actuator',
       signinRoles: '/api/v1/signin-roles',
-      signin: '/api/v1/signin'
+      signin: '/api/v1/signin',
+      projects: '/api/v1/projects',
+      sites: '/api/v1/sites'
     }
   });
 });
@@ -38,6 +42,8 @@ app.get('/', (req, res) => {
 app.use('/actuator', actuatorRoutes);
 app.use('/api/v1/signin-roles', signinRoleRoutes);
 app.use('/api/v1/signin', signinRoutes);
+app.use('/api/v1/projects', projectRoutes);
+app.use('/api/v1/sites', siteRoutes);
 
 // Start Server
 app.listen(PORT, () => {

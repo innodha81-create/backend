@@ -63,6 +63,36 @@ export const initDatabase = async () => {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
     `);
+
+    // 5. Projects Table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS projects (
+        project_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        project_name VARCHAR(255) NOT NULL,
+        project_code VARCHAR(100) UNIQUE,
+        client VARCHAR(255),
+        risk_level VARCHAR(20),
+        description TEXT,
+        status VARCHAR(50) DEFAULT 'active',
+        start_date DATE,
+        end_date DATE,
+        created_by UUID REFERENCES users(user_id) ON DELETE SET NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+      ALTER TABLE projects ADD COLUMN IF NOT EXISTS client VARCHAR(255);
+      ALTER TABLE projects ADD COLUMN IF NOT EXISTS risk_level VARCHAR(20);
+    `);
+          // 6. Sites Table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS sites (
+        site_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        name VARCHAR(255) NOT NULL UNIQUE,
+        description TEXT,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
   } catch (error) {
     console.error('Database init error:', error.message);
   }
