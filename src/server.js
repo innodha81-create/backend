@@ -7,6 +7,7 @@ import signinRoleRoutes from './signin-roles/routes/signinRole.routes.js';
 import signinRoutes from './signin/routes/signin.routes.js';
 import projectRoutes from './project/routes/project.routes.js';
 import siteRoutes from './site/routes/site.routes.js';
+import userRoutes from './users/routes/user.routes.js';
 
 dotenv.config();
 
@@ -33,7 +34,8 @@ app.get('/', (req, res) => {
       signinRoles: '/api/v1/signin-roles',
       signin: '/api/v1/signin',
       projects: '/api/v1/projects',
-      sites: '/api/v1/sites'
+      sites: '/api/v1/sites',
+      users: '/api/v1/users'
     }
   });
 });
@@ -44,6 +46,7 @@ app.use('/api/v1/signin-roles', signinRoleRoutes);
 app.use('/api/v1/signin', signinRoutes);
 app.use('/api/v1/projects', projectRoutes);
 app.use('/api/v1/sites', siteRoutes);
+app.use('/api/v1/users', userRoutes);
 
 // Start Server
 app.listen(PORT, () => {

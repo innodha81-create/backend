@@ -6,31 +6,28 @@ import {
   validateUpdateSite,
   validatePaginationQuery
 } from '../middlewares/site.validator.js';
-import { requireAuth } from '../middlewares/site.auth.js';
 
 const router = Router();
 
-// All Site endpoints are fully protected — requireAuth applied to every route
+// 1. Actuator-like API Directory (GET /api/v1/sites) - Public
+router.get('/', siteController.getApiDirectory);
 
-// 1. Actuator-like API Directory (GET /api/v1/sites) - Protected
-router.get('/', requireAuth, siteController.getApiDirectory);
+// 2. Site Analytics & Stats (GET /api/v1/sites/stats) - Public
+router.get('/stats', siteController.getSiteStats);
 
-// 2. Site Analytics & Stats (GET /api/v1/sites/stats) - Protected
-router.get('/stats', requireAuth, siteController.getSiteStats);
+// 3. Read All Sites with Pagination & Search (GET /api/v1/sites/list) - Public
+router.get('/list', validatePaginationQuery, siteController.getAllSites);
 
-// 3. Read All Sites with Pagination & Search (GET /api/v1/sites/list) - Protected
-router.get('/list', requireAuth, validatePaginationQuery, siteController.getAllSites);
+// 4. Read Single Site by ID (GET /api/v1/sites/:id) - Public
+router.get('/:id', validateSiteId, siteController.getSiteById);
 
-// 4. Read Single Site by ID (GET /api/v1/sites/:id) - Protected
-router.get('/:id', requireAuth, validateSiteId, siteController.getSiteById);
+// 5. Create Site (POST /api/v1/sites) - Public
+router.post('/', validateCreateSite, siteController.createSite);
 
-// 5. Create Site (POST /api/v1/sites) - Protected
-router.post('/', requireAuth, validateCreateSite, siteController.createSite);
+// 6. Update Site (PUT /api/v1/sites/:id) - Public
+router.put('/:id', validateSiteId, validateUpdateSite, siteController.updateSite);
 
-// 6. Update Site (PUT /api/v1/sites/:id) - Protected
-router.put('/:id', requireAuth, validateSiteId, validateUpdateSite, siteController.updateSite);
-
-// 7. Delete Site (DELETE /api/v1/sites/:id) - Protected
-router.delete('/:id', requireAuth, validateSiteId, siteController.deleteSite);
+// 7. Delete Site (DELETE /api/v1/sites/:id) - Public
+router.delete('/:id', validateSiteId, siteController.deleteSite);
 
 export default router;
