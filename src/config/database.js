@@ -27,6 +27,8 @@ export const initDatabase = async () => {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS users (
         user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        name VARCHAR(255),
+        employer VARCHAR(255),
         employee_code VARCHAR(50) UNIQUE,
         signin_role_id UUID NOT NULL REFERENCES signin_roles(signin_role_id) ON DELETE RESTRICT,
         username VARCHAR(100) NOT NULL UNIQUE,
@@ -38,6 +40,8 @@ export const initDatabase = async () => {
         updated_by UUID REFERENCES users(user_id) ON DELETE SET NULL,
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS name VARCHAR(255);
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS employer VARCHAR(255);
     `);
 
     // 3. User Sessions Table (Refresh token & Device tracking)
@@ -83,7 +87,8 @@ export const initDatabase = async () => {
       ALTER TABLE projects ADD COLUMN IF NOT EXISTS client VARCHAR(255);
       ALTER TABLE projects ADD COLUMN IF NOT EXISTS risk_level VARCHAR(20);
     `);
-          // 6. Sites Table
+
+    // 6. Sites Table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS sites (
         site_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -117,8 +122,8 @@ export const checkDatabaseHealth = async () => {
     return {
       status: 'DOWN',
       type: 'PostgreSQL (Supabase)',
-      latencyMs: Date.now() - startTime,
-      error: error.message
+      error: error.message,
+      latencyMs: Date.now() - startTime
     };
   }
 };
